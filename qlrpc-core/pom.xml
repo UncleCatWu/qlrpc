@@ -8,7 +8,6 @@
         <version>0.0.1-SNAPSHOT</version>
 <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
-    <groupId>com.ql</groupId>
     <artifactId>qlrpc-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>qlrpc-core</name>
@@ -19,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>

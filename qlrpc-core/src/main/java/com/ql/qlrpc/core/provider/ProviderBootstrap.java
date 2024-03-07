@@ -5,7 +5,6 @@ import com.ql.qlrpc.core.api.PpcResponse;
 import com.ql.qlrpc.core.api.RpcRequest;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -37,20 +36,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         skeleton.put(anInterface.getCanonicalName(), x);
     }
 
-    @Bean
-    ApplicationRunner providerRun() {
-        return x -> {
-            RpcRequest request = new RpcRequest();
-            request.setService("com.jacie.qlrpc.demo.api.UserService");
-            request.setMethod("findById");
-            request.setArgs(new Object[]{100});
-
-            PpcResponse response = invokeRequest(request);
-            System.out.println("return:" + response.getData());
-        };
-    }
-
-    private PpcResponse<?> invokeRequest(RpcRequest request) {
+    public PpcResponse<?> invoke(RpcRequest request) {
 
         Object bean = skeleton.get(request.getService());
         try {
