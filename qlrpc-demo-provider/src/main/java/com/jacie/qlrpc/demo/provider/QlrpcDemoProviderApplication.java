@@ -37,7 +37,7 @@ public class QlrpcDemoProviderApplication {
         return x -> {
             RpcRequest request = new RpcRequest();
             request.setService("com.jacie.qlrpc.demo.api.UserService");
-            request.setMethod("findById");
+            request.setMethodSign("findById@1_int");
             request.setArgs(new Object[]{100});
 
             PpcResponse<?> response = providerBootstrap.invoke(request);

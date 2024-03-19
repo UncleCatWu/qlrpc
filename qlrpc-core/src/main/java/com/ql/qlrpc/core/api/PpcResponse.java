@@ -12,4 +12,6 @@ public class PpcResponse<T> {
     private boolean status; //状态： true
 
     private T data; //new User
+
+    Exception ex;
 }
