@@ -5,6 +5,7 @@ import com.ql.qlrpc.core.api.PpcResponse;
 import com.ql.qlrpc.core.api.RpcRequest;
 import com.ql.qlrpc.core.meta.ProviderMeta;
 import com.ql.qlrpc.core.util.MethodUtils;
+import com.ql.qlrpc.core.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.context.ApplicationContext;
@@ -59,9 +60,9 @@ public class ProviderBootstrap implements ApplicationContextAware {
         List<ProviderMeta> providerMetas = skeleton.get(request.getService());
         try {
             ProviderMeta meta = findProviderMeta(providerMetas, request.getMethodSign());
-
             Method method = meta.getMethod();
-            Object result = method.invoke(meta.getServiceImpl(), request.getArgs());
+            Object[] args = processArgs(request.getArgs(), method.getParameterTypes());
+            Object result = method.invoke(meta.getServiceImpl(), args);
             rpcResponse.setStatus(true);
             rpcResponse.setData(result);
             return rpcResponse;
@@ -71,6 +72,15 @@ public class ProviderBootstrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+    private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
+        if (args == null && args.length == 0) return args;
+        Object[] objects = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            objects[i] = TypeUtils.cast(args[i], parameterTypes[i]);
+        }
+        return objects;
     }
 
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {

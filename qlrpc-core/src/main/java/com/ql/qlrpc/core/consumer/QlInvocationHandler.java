@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ql.qlrpc.core.api.PpcResponse;
 import com.ql.qlrpc.core.api.RpcRequest;
 import com.ql.qlrpc.core.util.MethodUtils;
+import com.ql.qlrpc.core.util.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -39,9 +40,12 @@ public class QlInvocationHandler implements InvocationHandler {
         PpcResponse response = post(request);
 
         if (response.isStatus()) {
-            //处理基本类型x
-            JSONObject data = (JSONObject) response.getData();
-            return data.toJavaObject(method.getReturnType());
+            Object data = response.getData();
+            if (data instanceof JSONObject jsonObject) {
+                return jsonObject.toJavaObject(method.getReturnType());
+            } else {
+                return TypeUtils.cast(data, Long.class);
+            }
         } else {
             Exception ex = response.getEx();
             throw new RuntimeException(ex);
